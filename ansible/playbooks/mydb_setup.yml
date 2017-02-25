@@ -4,3 +4,6 @@
   tasks: 
     - name: Install mariadb
       apt: name=mariadb-server state=present update_cache=yes
+      
+    - name: Ensure mariadb is running
+      service: name=mysql state=started enabled=yes
