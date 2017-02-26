@@ -1,0 +1,35 @@
+---
+# Bring Stack Down
+- hosts: loadbalancer
+  become: true
+  tasks: 
+    - name: Bring down loadbalancer
+      service: name=nginx state=stopped
+      
+# Bring Webservices down
+- hosts: webserver
+  become: true
+  tasks: 
+    - name: Bring down web-services
+      service: name=apache2 state=stopped
+      
+# Restart Maria DB
+- hosts: db01
+  become: true
+  tasks: 
+    - name: Restart DB
+      service: name=mysql state=restarted
+      
+# Bring Webservices Up
+- hosts: webserver
+  become: true
+  tasks: 
+    - name: Bring up web-services
+      service: name=apache2 state=started
+      
+# Bring Loadbalancer Up
+- hosts: loadbalancer
+  become: true
+  tasks: 
+    - name: Bring up loadbalancer
+      service: name=nginx state=started
