@@ -6,12 +6,18 @@
     - name: Bring down loadbalancer
       service: name=nginx state=stopped
       
-# Bring Webservices down
+    - name: Ensure all connections are gone
+      wait_for: port=80 state=drained 
+      
+# Bring Webservices down 
 - hosts: webserver
   become: true
   tasks: 
     - name: Bring down web-services
       service: name=apache2 state=stopped
+      
+    - name: Ensure all connections are gone
+      wait_for: port=80 state=stopped 
       
 # Restart Maria DB
 - hosts: db01
@@ -20,6 +26,9 @@
     - name: Restart DB
       service: name=mysql state=restarted
       
+    - name: Ensure mysql is started
+      wait_for: port=3306 state=started
+      
 # Bring Webservices Up
 - hosts: webserver
   become: true
@@ -27,9 +36,15 @@
     - name: Bring up web-services
       service: name=apache2 state=started
       
+    - name: Ensure apache2 is up
+      wait_for: port=80 state=started 
+      
 # Bring Loadbalancer Up
 - hosts: loadbalancer
   become: true
   tasks: 
     - name: Bring up loadbalancer
       service: name=nginx state=started
+      
+    - name: Ensure nginx is up
+      wait_for: port=80 state=started 

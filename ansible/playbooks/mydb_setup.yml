@@ -3,7 +3,25 @@
   become: true
   tasks: 
     - name: Install mariadb
-      apt: name=mariadb-server state=present update_cache=yes
-      
+      apt: name={{item}} state=present update_cache=yes
+      with_items:
+        - mariadb-server
+        - python-mysqldb
+
     - name: Ensure mariadb is running
       service: name=mysql state=started enabled=yes
+
+    - name: Ensure mariadb is listening on the right port
+      lineinfile: dest=/etc/mysql/my.cnf regexp=^bind-address line="bind-address = 0.0.0.0"
+      notify: 
+        - Restart mariadb
+        
+    - name: Create demo database
+      mysql_db: name=demo state=present
+
+    - name: Add user
+      mysql_user: name=demo password=demo priv=demo.*:ALL host='%' state=present  
+
+  handlers: 
+    - name: Restart mariadb
+      service: name=mysql state=restarted
