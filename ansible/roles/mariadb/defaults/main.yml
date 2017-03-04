@@ -1,0 +1,6 @@
+---
+# defaults file for mariadb
+db_name: my-app-database
+db_user_name: my-app-db-user
+db_user_password: my-app-user-password
+db_user_host: localhost

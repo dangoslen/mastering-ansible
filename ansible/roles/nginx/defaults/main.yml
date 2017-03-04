@@ -1,0 +1,6 @@
+---
+# defaults file for nginx
+sites:
+  my-application:
+    frontend: 80
+    backend: 80

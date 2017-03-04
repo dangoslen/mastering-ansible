@@ -1,0 +1,6 @@
+---
+- hosts: webserver
+  become: true
+  roles:
+    - apache2
+    - { role: demo_app, demp_app_db_user_name: demo, demo_app_db_user_password: demo, demo_app_db_name: demo }

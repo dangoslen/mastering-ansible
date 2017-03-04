@@ -1,0 +1,5 @@
+---
+- include: control_setup.yml
+- include: mydb_setup.yml
+- include: webserver_setup.yml
+- include: loadbalancer_setup.yml

@@ -1,0 +1,33 @@
+---
+# tasks file for demo_app
+- name: Install application dependencies
+  apt: name={{item}} state=present update_cache=yes
+  with_items:
+    - python-pip
+    - python-virtualenv
+    - python-mysqldb
+
+- name: Copy Application files
+  copy: src=../files/demo/app/ dest=/var/www/demo mode=0755
+  notify:
+    - Restart apache2
+
+- name: Copy demo.wsgi template
+  template: src=demo.wsgi.j2 dest=/var/www/demo/demo.wsgi mode=0755
+  notify:
+    - Restart apache2
+
+- name: Copy virtual host
+  copy: src=../files/demo/demo.conf dest=/etc/apache2/sites-available mode=0755
+  notify:
+    - Restart apache2
+
+- name: Setup python environment
+  pip: requirements=/var/www/demo/requirements.txt virtualenv=/var/www/demo/.venv
+  notify:
+    - Restart apache2
+
+- name: Activate demo apache2
+  file: src=/etc/apache2/sites-available/demo.conf dest=/etc/apache2/sites-enabled/demo.conf state=link
+  notify:
+    - Restart apache2

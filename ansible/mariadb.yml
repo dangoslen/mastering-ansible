@@ -1,0 +1,5 @@
+---
+- hosts: db01
+  become: true
+  roles:
+    - { role: mariadb, db_name: demo, db_user_name: demo, db_user_password: demo, db_user_host: '%' }

@@ -1,0 +1,21 @@
+---
+# tasks file for mariadb
+- name: Install mariadb
+  apt: name={{item}} state=present update_cache=yes
+  with_items:
+    - mariadb-server
+    - python-mysqldb
+
+- name: Ensure mariadb is listening on the right port
+  lineinfile: dest=/etc/mysql/my.cnf regexp=^bind-address line="bind-address = {{ ansible_eth1.ipv4.address }}"
+  notify:
+    - Restart mariadb
+
+- name: Ensure mariadb is running
+  service: name=mysql state=started enabled=yes
+
+- name: Create demo database
+  mysql_db: name={{ db_name }} state=present
+
+- name: Add user
+  mysql_user: name={{ db_user_name }} password={{ db_user_password }} priv={{ db_user_name }}.*:ALL host='{{ db_user_host }}' state=present
