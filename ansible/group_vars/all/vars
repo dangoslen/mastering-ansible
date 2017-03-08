@@ -2,4 +2,4 @@
 # Variables for Ansible
 demo_app_db_name: demo
 demo_app_db_user_name: demo
-demo_app_db_user_password: demo
+demo_app_db_user_password: " {{ vault_db_user_password}} "
