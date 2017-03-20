@@ -1,7 +1,7 @@
 ---
 # tasks file for nginx
-- name: Install nginx
-  apt: name={{item}} state=present update_cache=yes
+- name: Install nginx and tools
+  apt: name={{item}} state=present
   with_items:
     - nginx
     - python-httplib2
@@ -15,6 +15,7 @@
 - name: Get active sites
   shell: ls -1 /etc/nginx/sites-enabled
   register: active_site
+  changed_when: "active_site.stdout_lines != sites.keys()"
 
 - name: De-activate default nginx sites
   file: path=/etc/nginx/sites-enabled/{{ item }} state=absent

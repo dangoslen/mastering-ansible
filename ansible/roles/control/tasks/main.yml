@@ -1,9 +1,8 @@
 ---
 # tasks file for control
 - name: Install control tools
-  apt: name={{item}} state=present update_cache=yes
+  apt: name={{item}} state=present
   with_items:
     - curl
     - wget
     - python-httplib2
-

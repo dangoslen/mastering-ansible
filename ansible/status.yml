@@ -1,18 +1,22 @@
 ---
 - hosts: loadbalancer
   become: true
+  gather_facts: false
   tasks:
     - name: Verify nginx is running
       command: service nginx status
+      changed_when: false
 
     - name: Verify nginx is listening on 80
       wait_for: port=80 timeout=1
 
 - hosts: webserver
   become: true
+  gather_facts: false
   tasks:
     - name: Verify apache is running
       command: service apache2 status
+      changed_when: false
 
     - name: Verify apache2 is listening on 80
       wait_for: port=80 timeout=1
@@ -22,11 +26,13 @@
   tasks:
     - name: Verify mysql is running
       command: service mysql status
+      changed_when: false
 
     - name: Verify mysql is listening on 3306
       wait_for: host={{ ansible_eth1.ipv4.address }} port=3306 timeout=1
 
 - hosts: control
+  gather_facts: false
   tasks:
      - name: Verify end-to-end index response
        uri: url=http://{{item}} return_content=yes
@@ -48,6 +54,7 @@
 
 
 - hosts: loadbalancer
+  gather_facts: false
   tasks:
     - name: Verify backend response
       uri: url=http://{{item}} return_content=yes
